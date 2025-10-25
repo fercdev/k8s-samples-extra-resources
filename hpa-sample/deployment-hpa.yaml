@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dp-webapp
+  labels:
+    app: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - name: webapp-container
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              cpu: 10m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+  labels:
+    app: webapp
+spec:
+  selector:
+    app: webapp
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30084
